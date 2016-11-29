@@ -20,7 +20,7 @@ class Piece {
 		return $this->name;
 	}
 
-	public function isPresented(IImg $screenshot) {
+	public function isPresent(IImg $screenshot) {
 		$bounds = $this->getBounds($screenshot);
 
 		return $bounds? true : false;

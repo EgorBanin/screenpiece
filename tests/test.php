@@ -36,5 +36,5 @@ $logo = new Piece(
 	])
 );
 $screenshot = GDImg::fromPath(__DIR__.'/data/google1.png');
-$logoIsPresent = $logo->isPresented($screenshot);
+$logoIsPresent = $logo->isPresent($screenshot);
 var_dump($logoIsPresent);
