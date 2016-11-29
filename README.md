@@ -1,15 +1,15 @@
 # Screenpiece
 
 ~~~php
-$el = new \Screenpiece\Element(
-	'Логотип Goole',
-	\Screenpiece\GDImg::fromPath(__DIR__.'/data/googleLogo.png'),
-	\Screenpiece\Position::likeCss([
+$logo = new Piece(
+	'Логотип Google',
+	GDImg::fromPath(__DIR__.'/data/googleLogo.png'),
+	Position::likeCss([
 		'top' => 10,
 		'left' => 10,
 	])
 );
-$screenshot = \Screenpiece\GDImg::fromPath(__DIR__.'/data/google1.png');
-$logoIsPresent = $el->isPresented($screenshot);
+$screenshot = GDImg::fromPath(__DIR__.'/data/google1.png');
+$logoIsPresent = $logo->isPresented($screenshot);
 var_dump($logoIsPresent);
 ~~~

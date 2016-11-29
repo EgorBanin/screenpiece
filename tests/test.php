@@ -27,8 +27,8 @@ $pos = $screenshot->subImgPos($termsButton, null, true);
 echo "time: " . (microtime(true) - $start) . "\n";
 var_dump($pos);
 
-$el = new Element(
-	'Логотип Goole',
+$logo = new Piece(
+	'Логотип Google',
 	GDImg::fromPath(__DIR__.'/data/googleLogo.png'),
 	Position::likeCss([
 		'top' => 10,
@@ -36,5 +36,5 @@ $el = new Element(
 	])
 );
 $screenshot = GDImg::fromPath(__DIR__.'/data/google1.png');
-$logoIsPresent = $el->isPresented($screenshot);
+$logoIsPresent = $logo->isPresented($screenshot);
 var_dump($logoIsPresent);

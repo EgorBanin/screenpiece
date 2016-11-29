@@ -2,7 +2,7 @@
 
 namespace Screenpiece;
 
-class Element {
+class Piece {
 
 	private $name;
 
@@ -30,7 +30,7 @@ class Element {
 		$pos = $screenshot->subImgPos(
 			$this->img,
 			$this->position->getRect(),
-			$this->position->getDirection()
+			! $this->position->onTop()
 		);
 
 		if ($pos) {

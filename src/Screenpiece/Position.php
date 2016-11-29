@@ -4,8 +4,6 @@ namespace Screenpiece;
 
 class Position {
 
-	const DIRECTION_TOP = 1 << 0;
-
 	private $x1;
 
 	private $y1;
@@ -14,11 +12,14 @@ class Position {
 
 	private $y2;
 
-	public function __construct(array $x1, array $y1, array $x2, array $y2) {
+	private $onTop;
+
+	public function __construct(array $x1, array $y1, array $x2, array $y2, $onTop) {
 		$this->x1 = $x1;
 		$this->y1 = $y1;
 		$this->x2 = $x2;
 		$this->y2 = $y2;
+		$this->onTop = $onTop;
 	}
 
 	public static function likeCss($position) {
@@ -55,7 +56,9 @@ class Position {
 			$y2 = [0, INF];
 		}
 
-		return new self($x1, $y1, $x2, $y2);
+		$onTop = isset($top);
+
+		return new self($x1, $y1, $x2, $y2, $onTop);
 	}
 
 	public static function normalizeCoord($val) {
@@ -76,8 +79,8 @@ class Position {
 		return [$x, $y, $width, $height];
 	}
 
-	public function getDirection() {
-		return false; // todo
+	public function onTop() {
+		return $this->onTop;
 	}
 
 }
