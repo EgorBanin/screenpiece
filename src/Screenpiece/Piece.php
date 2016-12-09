@@ -27,11 +27,13 @@ class Piece {
 	}
 
 	public function getBounds(IImg $screenshot) {
-		$pos = $screenshot->subImgPos(
+		$positions = $screenshot->subImgPos(
 			$this->img,
+			1,
 			$this->position->getRect(),
 			! $this->position->onTop()
 		);
+		$pos = reset($positions);
 
 		if ($pos) {
 			list($width, $height) = $this->img->size();

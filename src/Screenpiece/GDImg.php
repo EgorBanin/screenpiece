@@ -36,14 +36,14 @@ class GDImg implements IImg {
 		return $colorId;
 	}
 
-	public function subImgPos(IImg $subimg, $area = null, $reverse = false) {
+	public function subImgPos(IImg $subimg, $limit = 1, $area = null, $reverse = false) {
 		list($imgWidth, $imgHeight) = $this->size();
 		list($subimgWidth, $subimgHeight) = $subimg->size();
 
 		$x = 0;
 		$y = 0;
-		$width = $imgWidth - $subimgWidth;
-		$height = $imgHeight - $subimgHeight;
+		$width = $imgWidth - $subimgWidth + 1;
+		$height = $imgHeight - $subimgHeight + 1;
 
 		if ($area) {
 			list($areaX, $areaY, $areaWidth, $areaHeight) = $area;
@@ -62,7 +62,7 @@ class GDImg implements IImg {
 			$imgY = $y;
 		}
 
-		$result = false;
+		$results = [];
 		$keyPoint = null;
 		for ($i = 0; $i < $height; ++$i) {
 			$imgX = $x;
@@ -100,8 +100,11 @@ class GDImg implements IImg {
 				}
 
 				if ($eq) {
-					$result = [$imgX, $imgY];
-					break 2;
+					// todo не искать на найденом
+					$results[] = [$imgX, $imgY];
+					if ($limit > 0 && count($results) >= $limit) {
+						break 2;
+					}
 				}
 
 				++$imgX;
@@ -110,7 +113,7 @@ class GDImg implements IImg {
 			$imgY += $step;
 		}
 
-		return $result;
+		return $results;
 	}
 	
 }

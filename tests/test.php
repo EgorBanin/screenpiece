@@ -15,15 +15,27 @@ spl_autoload_register(function($className) {
 });
 
 $screenshot = GDImg::fromPath(__DIR__.'/data/google1.png');
+
 $logo = GDImg::fromPath(__DIR__.'/data/googleLogo.png');
 $start = microtime(true);
 $pos = $screenshot->subImgPos($logo);
 echo "time: " . (microtime(true) - $start) . "\n";
 var_dump($pos);
 
+$start = microtime(true);
+$pos = $logo->subImgPos($logo);
+echo "time: " . (microtime(true) - $start) . "\n";
+var_dump($pos);
+
 $termsButton = GDImg::fromPath(__DIR__.'/data/googleTerms.png');
 $start = microtime(true);
-$pos = $screenshot->subImgPos($termsButton, null, true);
+$pos = $screenshot->subImgPos($termsButton, 1, null, true);
+echo "time: " . (microtime(true) - $start) . "\n";
+var_dump($pos);
+
+$o = GDImg::fromPath(__DIR__.'/data/o.png');
+$start = microtime(true);
+$pos = $screenshot->subImgPos($o, 0, null, true);
 echo "time: " . (microtime(true) - $start) . "\n";
 var_dump($pos);
 
