@@ -1,0 +1,12 @@
+{
+	"name": "eb/screenpiece",
+	"type": "library",
+	"keywords": ["screeshot", "search", "gd"],
+	"license": "UNLICENSE",
+	"require": {},
+	"autoload": {
+		"psr-0": {
+			"Screenpiece": "src/"
+		}
+	}
+}
