@@ -10,10 +10,13 @@ class Piece {
 
 	private $position;
 
-	public function __construct($name, IImg $img, $position) {
+	private $index;
+
+	public function __construct($name, IImg $img, $position, $index) {
 		$this->name = $name;
 		$this->img = $img;
 		$this->position = $position;
+		$this->index = $index;
 	}
 
 	public function getName() {
@@ -26,14 +29,20 @@ class Piece {
 		return $bounds? true : false;
 	}
 
+	/**
+	 * Получить границы фрагмента, если он найден на скриншоте
+	 * @param IImg $screenshot
+	 * @return array|false {x: int, y: int, width: int, height: int}
+	 */
 	public function getBounds(IImg $screenshot) {
+		$limit = $this->index + 1;
 		$positions = $screenshot->subImgPos(
 			$this->img,
-			1,
+			$limit,
 			$this->position->getRect(),
 			! $this->position->onTop()
 		);
-		$pos = reset($positions);
+		$pos = isset($positions[$this->index])? $positions[$this->index] : false;
 
 		if ($pos) {
 			list($width, $height) = $this->img->size();

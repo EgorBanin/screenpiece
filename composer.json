@@ -3,7 +3,12 @@
 	"type": "library",
 	"keywords": ["screeshot", "search", "gd"],
 	"license": "UNLICENSE",
-	"require": {},
+	"require": {
+		"ext-gd": "*"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~5"
+	},
 	"autoload": {
 		"psr-0": {
 			"Screenpiece": "src/"
