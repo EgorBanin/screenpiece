@@ -22,7 +22,12 @@ class Position {
 		$this->onTop = $onTop;
 	}
 
-	public static function likeCss($position) {
+	/**
+	 * Инициализация массивом углов
+	 * @param array $position {top: int, left: int, bottom: int, right: int}
+	 * @return self
+	 */
+	public static function initByCorners(array $position) {
 		$top = isset($position['top'])? $position['top'] : null;
 		$left = isset($position['left'])? $position['left'] : null;
 		$bottom = isset($position['bottom'])? $position['bottom'] : null;

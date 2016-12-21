@@ -7,7 +7,7 @@ class PieceTest extends \PHPUnit_Framework_TestCase {
 		$logo = new \Screenpiece\Piece(
 			'Логотип Google',
 			\Screenpiece\GDImg::fromPath(DATADIR.'/googleLogo.png'),
-			\Screenpiece\Position::likeCss([
+			\Screenpiece\Position::initByCorners([
 				'top' => 10,
 				'left' => 10,
 			]),
@@ -24,7 +24,7 @@ class PieceTest extends \PHPUnit_Framework_TestCase {
 		$logo = new \Screenpiece\Piece(
 			'Логотип Google',
 			\Screenpiece\GDImg::fromPath(DATADIR.'/googleLogo.png'),
-			\Screenpiece\Position::likeCss([
+			\Screenpiece\Position::initByCorners([
 				'top' => 11,
 				'left' => 11,
 			]),
@@ -39,7 +39,7 @@ class PieceTest extends \PHPUnit_Framework_TestCase {
 		$logo = new \Screenpiece\Piece(
 			'Логотип Google',
 			\Screenpiece\GDImg::fromPath(DATADIR.'/googleLogo.png'),
-			\Screenpiece\Position::likeCss([
+			\Screenpiece\Position::initByCorners([
 				'top' => 10,
 				'left' => 10,
 			]),
