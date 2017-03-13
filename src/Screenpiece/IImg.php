@@ -18,4 +18,12 @@ interface IImg {
 
 	public function getPixel($x, $y);
 
+	/**
+	 * Генератор для обхода пикселей
+	 * @param array $area [x, y, width, height]
+	 * @param bool $reverse с конца (снизу вверх)
+	 * @return \Generator
+	 */
+	public function eachPixel($area = null, $reverse = false);
+
 }

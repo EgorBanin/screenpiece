@@ -36,14 +36,10 @@ class GDImg implements IImg {
 		return $colorId;
 	}
 
-	public function subImgPos(IImg $subimg, $limit = 1, $area = null, $reverse = false) {
-		list($imgWidth, $imgHeight) = $this->size();
-		list($subimgWidth, $subimgHeight) = $subimg->size();
-
+	public function eachPixel($area = null, $reverse = false) {
+		list($width, $height) = $this->size();
 		$x = 0;
 		$y = 0;
-		$width = $imgWidth - $subimgWidth + 1;
-		$height = $imgHeight - $subimgHeight + 1;
 
 		if ($area) {
 			list($areaX, $areaY, $areaWidth, $areaHeight) = $area;
@@ -62,55 +58,74 @@ class GDImg implements IImg {
 			$imgY = $y;
 		}
 
-		$results = [];
-		$keyPoint = null;
 		for ($i = 0; $i < $height; ++$i) {
 			$imgX = $x;
 			for ($j = 0; $j < $width; ++$j) {
-				// первым делом проверяем ключевую точку
-				if ($keyPoint) {
-					$imgColor = $this->getPixel($imgX + $keyPoint[0], $imgY + $keyPoint[1]);
-					$subimgColor = $subimg->getPixel($keyPoint[0], $keyPoint[1]);
-
-					if ($imgColor !== $subimgColor) {
-						++$imgX;
-						continue;
-					}
-				}
-
-				// проверям все точки
-				$eq = true;
-				$subimgY = 0;
-				while ($subimgY < $subimgHeight) {
-					$subimgX = 0;
-					while ($subimgX < $subimgWidth) {
-						$imgColor = $this->getPixel($imgX + $subimgX, $imgY + $subimgY);
-						$subimgColor = $subimg->getPixel($subimgX, $subimgY);
-
-						if ($imgColor !== $subimgColor) {
-							$eq = false;
-							$keyPoint = [$subimgX, $subimgY];
-							break 2;
-						}
-
-						++$subimgX;
-					}
-
-					++$subimgY;
-				}
-
-				if ($eq) {
-					// todo не искать на найденом
-					$results[] = [$imgX, $imgY];
-					if ($limit > 0 && count($results) >= $limit) {
-						break 2;
-					}
-				}
-
+				$imgColor = $this->getPixel($imgX, $imgY);
+				yield [
+					'x' => $imgX,
+					'y' => $imgY,
+					'color' => $imgColor,
+				];
 				++$imgX;
 			}
 
 			$imgY += $step;
+		}
+	}
+
+	// @todo: перенести
+	public function subImgPos(IImg $subimg, $limit = 1, $area = null, $reverse = false, $skipTransparent = false) {
+		list($imgWidth, $imgHeight) = $this->size();
+		list($subimgWidth, $subimgHeight) = $subimg->size();
+
+		$x = 0;
+		$y = 0;
+		$width = $imgWidth - $subimgWidth + 1;
+		$height = $imgHeight - $subimgHeight + 1;
+
+		if ($area) {
+			list($areaX, $areaY, $areaWidth, $areaHeight) = $area;
+			$x = max($x, $areaX);
+			$y = max($y, $areaY);
+			$width = min($width - $x, $areaWidth);
+			$height = min($height - $y, $areaHeight);
+		}
+
+		$results = [];
+		$keyPoint = null;
+		foreach ($this->eachPixel([$x, $y, $width, $height], $reverse) as $imgPixel) {
+			// первым делом проверяем ключевую точку
+			if ($keyPoint) {
+				$imgColor = $this->getPixel($imgPixel['x'] + $keyPoint[0], $imgPixel['y'] + $keyPoint[1]);
+				$subimgColor = $subimg->getPixel($keyPoint[0], $keyPoint[1]);
+
+				if ($imgColor !== $subimgColor) {
+					continue;
+				}
+			}
+
+			// проверям все точки
+			$eq = true;
+			foreach ($subimg->eachPixel() as $subimgPixel) {
+				if ($subimgPixel['color'] >> 24 === 127 && $skipTransparent) {
+					continue;
+				}
+				$imgColor = $this->getPixel($imgPixel['x'] + $subimgPixel['x'], $imgPixel['y'] + $subimgPixel['y']);
+				if ($imgColor !== $subimgPixel['color']) {
+					$eq = false;
+					$keyPoint = [$subimgPixel['x'], $subimgPixel['y']];
+					break;
+				}
+			}
+
+			if ($eq) {
+				// todo не искать на найденом
+				$results[] = [$imgPixel['x'], $imgPixel['y']];
+				if ($limit > 0 && count($results) >= $limit) {
+					break;
+				}
+			}
 		}
 
 		return $results;
