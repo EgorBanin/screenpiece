@@ -8,11 +8,24 @@ class GDImg implements IImg {
 
 	public function __construct($img) {
 		\imagepalettetotruecolor($img);
+		\imagecolorallocatealpha($img, 0, 0, 0, 127);
 		$this->img = $img;
+	}
+
+	public static function createEmpty($w, $h) {
+		$img = \imagecreatetruecolor($w, $h);
+
+		return new self($img);
 	}
 
 	public static function fromPath($path) {
 		$img = \imagecreatefrompng($path);
+
+		return new self($img);
+	}
+
+	public static function fromString($str) {
+		$img = \imagecreatefromstring($str);
 
 		return new self($img);
 	}
@@ -34,6 +47,12 @@ class GDImg implements IImg {
 		$colorId = \imagecolorat($this->img, $x, $y);
 
 		return $colorId;
+	}
+
+	public function setPixel($x, $y, $color) {
+		list($r, $g, $b, $a) = $color;
+		$c = \imagecolorallocatealpha($this->img, $r, $g, $b, $a);
+		\imagesetpixel($this->img, $x, $y, $c);
 	}
 
 	public function eachPixel($area = null, $reverse = false) {
@@ -74,61 +93,37 @@ class GDImg implements IImg {
 		}
 	}
 
+	public function search(IImg $subImg) {
+		$search = new Search($this, $subImg);
+
+		return $search;
+	}
+
+	public function diff(IImg $img) {
+		$diff = new Diff($this, $img);
+
+		return $diff;
+	}
+
 	// @todo: перенести
 	public function subImgPos(IImg $subimg, $limit = 1, $area = null, $reverse = false, $skipTransparent = false) {
-		list($imgWidth, $imgHeight) = $this->size();
-		list($subimgWidth, $subimgHeight) = $subimg->size();
+		$search = $this
+			->search($subimg)
+			->setLimit($limit)
+			->setArea($area)
+			->setReverse($reverse)
+			->setSkipTransparent($skipTransparent);
 
-		$x = 0;
-		$y = 0;
-		$width = $imgWidth - $subimgWidth + 1;
-		$height = $imgHeight - $subimgHeight + 1;
+		return $search();
+	}
 
-		if ($area) {
-			list($areaX, $areaY, $areaWidth, $areaHeight) = $area;
-			$x = max($x, $areaX);
-			$y = max($y, $areaY);
-			$width = min($width - $x, $areaWidth);
-			$height = min($height - $y, $areaHeight);
-		}
+	public function __toString() {
+		\imagesavealpha($this->img, true);
+		\ob_start();
+		\imagepng($this->img);
+		$data = \ob_get_clean();
 
-		$results = [];
-		$keyPoint = null;
-		foreach ($this->eachPixel([$x, $y, $width, $height], $reverse) as $imgPixel) {
-			// первым делом проверяем ключевую точку
-			if ($keyPoint) {
-				$imgColor = $this->getPixel($imgPixel['x'] + $keyPoint[0], $imgPixel['y'] + $keyPoint[1]);
-				$subimgColor = $subimg->getPixel($keyPoint[0], $keyPoint[1]);
-
-				if ($imgColor !== $subimgColor) {
-					continue;
-				}
-			}
-
-			// проверям все точки
-			$eq = true;
-			foreach ($subimg->eachPixel() as $subimgPixel) {
-				if ($subimgPixel['color'] >> 24 === 127 && $skipTransparent) {
-					continue;
-				}
-				$imgColor = $this->getPixel($imgPixel['x'] + $subimgPixel['x'], $imgPixel['y'] + $subimgPixel['y']);
-				if ($imgColor !== $subimgPixel['color']) {
-					$eq = false;
-					$keyPoint = [$subimgPixel['x'], $subimgPixel['y']];
-					break;
-				}
-			}
-
-			if ($eq) {
-				// todo не искать на найденом
-				$results[] = [$imgPixel['x'], $imgPixel['y']];
-				if ($limit > 0 && count($results) >= $limit) {
-					break;
-				}
-			}
-		}
-
-		return $results;
+		return $data;
 	}
 	
 }

@@ -4,6 +4,8 @@ namespace Screenpiece;
 
 interface IImg {
 
+	public static function createEmpty($w, $h);
+
 	public function size();
 
 	/**
@@ -18,6 +20,8 @@ interface IImg {
 
 	public function getPixel($x, $y);
 
+	public function setPixel($x, $y, $color);
+
 	/**
 	 * Генератор для обхода пикселей
 	 * @param array $area [x, y, width, height]
@@ -25,5 +29,14 @@ interface IImg {
 	 * @return \Generator
 	 */
 	public function eachPixel($area = null, $reverse = false);
+
+	/**
+	 * Объект поиска позиции изображения в текущем
+	 * @param IImg $subImg
+	 * @return Search
+	 */
+	public function search(IImg $subImg);
+
+	public function __toString();
 
 }
