@@ -7,12 +7,12 @@ class GDImg implements IImg {
 	private $img;
 
 	public function __construct($img) {
+		\imagepalettetotruecolor($img);
 		$this->img = $img;
 	}
 
 	public static function fromPath($path) {
 		$img = \imagecreatefrompng($path);
-		\imagepalettetotruecolor($img);
 
 		return new self($img);
 	}
