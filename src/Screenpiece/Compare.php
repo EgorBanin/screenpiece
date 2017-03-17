@@ -8,9 +8,17 @@ class Compare {
 
 	private $img2;
 
+	private $skipTransparent = false;
+
 	public function __construct(IImg $img1, IImg $img2) {
 		$this->img1 = $img1;
 		$this->img2 = $img2;
+	}
+
+	public function setSkipTransparent($skipTransparent) {
+		$this->skipTransparent = $skipTransparent;
+
+		return $this;
 	}
 
 	public function __invoke() {
@@ -28,8 +36,12 @@ class Compare {
 				($pixel['x'] < $img1Width && $pixel['x'] < $img2Width)
 				&& ($pixel['y'] < $img1Height && $pixel['y'] < $img2Height)
 			) {
-				$p1 = $this->img1->getPixel($pixel['x'], $pixel['y']);
 				$p2 = $this->img2->getPixel($pixel['x'], $pixel['y']);
+				if ($p2 >> 24 === 127 && $this->skipTransparent) {
+					$diff->setPixel($pixel['x'], $pixel['y'], [0, 0, 0, 127]);
+					continue;
+				}
+				$p1 = $this->img1->getPixel($pixel['x'], $pixel['y']);
 				if ($p1 === $p2) {
 					$diff->setPixel($pixel['x'], $pixel['y'], [0, 0, 0, 127]);
 				} else {
