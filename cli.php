@@ -12,17 +12,67 @@ spl_autoload_register(function($className) {
 	}
 });
 
-$piece = isset($argv[1])? $argv[1] : null;
-$screen = isset($argv[2])? $argv[2] : null;
+$method = isset($argv[1])? $argv[1] : null;
+$filename1 = isset($argv[2])? $argv[2] : null;
+$filename2 = isset($argv[3])? $argv[3] : null;
 
-$screenImg = \Screenpiece\GDImg::fromPath($screen);
-$pieceImg = \Screenpiece\GDImg::fromPath($piece);
+$opts = [];
+foreach ($argv as $part) {
+	if (strpos($part, '-') === 0) {
+		list($name, $val) = explode('=', ltrim($part, '-'), 2);
+		$opts[$name] = trim($val, '"\'');
+	}
+}
 
-$diff = $screenImg
-	->diff($pieceImg)();
-//	->setLimit(1)
-//	->setSkipTransparent(true)();
+$availableMethods = [
+	'help',
+	'search',
+	'compare',
+];
 
-$f = tempnam('/tmp', 'diff.');
-file_put_contents($f, (string) $diff);
-echo $f, "\n";
+$errCode = 0;
+
+if ( ! in_array($method, $availableMethods)) {
+	$method = 'help';
+	$errCode = 1;
+}
+
+if ($filename1 && $filename2) {
+	$img1 = \Screenpiece\GDImg::fromPath($filename1);
+	$img2 = \Screenpiece\GDImg::fromPath($filename2);
+}
+
+switch ($method) {
+	case 'help':
+	default:
+		echo "Usage:\n";
+		echo "php cli.php search haystackImage needleImage\n";
+		echo "php cli.php compare imageA imageB --diff=file_for_save_diff_image\n";
+		echo "php cli.php help\n";
+		break;
+
+	case 'search':
+		$pos = \Screenpiece\Utils::search($img1, $img2)();
+		if (empty($pos)) {
+			echo "not found\n";
+		}
+
+		foreach ($pos as $i => $position) {
+			echo "$i: ".implode(', ', $position)."\n";
+		}
+		break;
+
+	case 'compare':
+		$compare = \Screenpiece\Utils::compare($img1, $img2);
+		list($isEquals, $diff) = $compare();
+
+		if ( ! empty($opts['diff'])) {
+			file_put_contents($opts['diff'], (string) $diff);
+		}
+
+		echo $isEquals? "same\n" : "different\n";
+		break;
+
+}
+
+exit($errCode);

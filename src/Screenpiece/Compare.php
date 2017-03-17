@@ -2,7 +2,7 @@
 
 namespace Screenpiece;
 
-class Diff {
+class Compare {
 
 	private $img1;
 
@@ -14,6 +14,7 @@ class Diff {
 	}
 
 	public function __invoke() {
+		$eq = true;
 		list($img1Width, $img1Height) = $this->img1->size();
 		list($img2Width, $img2Height) = $this->img2->size();
 
@@ -29,17 +30,19 @@ class Diff {
 			) {
 				$p1 = $this->img1->getPixel($pixel['x'], $pixel['y']);
 				$p2 = $this->img2->getPixel($pixel['x'], $pixel['y']);
-				if ($p1['color'] === $p2['color']) {
+				if ($p1 === $p2) {
 					$diff->setPixel($pixel['x'], $pixel['y'], [0, 0, 0, 127]);
 				} else {
+					$eq = false;
 					$diff->setPixel($pixel['x'], $pixel['y'], [255, 0, 0, 0]);
 				}
 			} else {
+				$eq = false;
 				$diff->setPixel($pixel['x'], $pixel['y'], [255, 0, 0, 0]);
 			}
 		}
 
-		return $diff;
+		return [$eq, $diff];
 	}
 
 }

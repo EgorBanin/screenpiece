@@ -3,7 +3,7 @@
 ~~~php
 $screenshot = GDImg::fromPath(__DIR__.'/data/google1.png');
 $logo = GDImg::fromPath(__DIR__.'/data/googleLogo.png');
-$pos = $screenshot->search($logo)();
+$pos = Utils::search($screenshot, $logo)();
 var_dump($pos);
 ~~~
 

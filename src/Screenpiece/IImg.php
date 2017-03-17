@@ -9,6 +9,8 @@ interface IImg {
 	public function size();
 
 	/**
+	 * @deprecated
+	 * Следует использовать Utils::search
 	 * Поиск позиции изображения в другом изображении
 	 * @param IImg $subimg искомое изображение
 	 * @param int $limit лимит количества вхождений, 0 -- все вхождения
@@ -29,13 +31,6 @@ interface IImg {
 	 * @return \Generator
 	 */
 	public function eachPixel($area = null, $reverse = false);
-
-	/**
-	 * Объект поиска позиции изображения в текущем
-	 * @param IImg $subImg
-	 * @return Search
-	 */
-	public function search(IImg $subImg);
 
 	public function __toString();
 

@@ -8,6 +8,8 @@ class GDImg implements IImg {
 
 	public function __construct($img) {
 		\imagepalettetotruecolor($img);
+		\imagealphablending($img, false);
+		\imagesavealpha($img, true);
 		\imagecolorallocatealpha($img, 0, 0, 0, 127);
 		$this->img = $img;
 	}
@@ -93,22 +95,8 @@ class GDImg implements IImg {
 		}
 	}
 
-	public function search(IImg $subImg) {
-		$search = new Search($this, $subImg);
-
-		return $search;
-	}
-
-	public function diff(IImg $img) {
-		$diff = new Diff($this, $img);
-
-		return $diff;
-	}
-
-	// @todo: перенести
 	public function subImgPos(IImg $subimg, $limit = 1, $area = null, $reverse = false, $skipTransparent = false) {
-		$search = $this
-			->search($subimg)
+		$search = Utils::search($this, $subimg)
 			->setLimit($limit)
 			->setArea($area)
 			->setReverse($reverse)
@@ -118,7 +106,6 @@ class GDImg implements IImg {
 	}
 
 	public function __toString() {
-		\imagesavealpha($this->img, true);
 		\ob_start();
 		\imagepng($this->img);
 		$data = \ob_get_clean();
