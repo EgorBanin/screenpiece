@@ -95,6 +95,13 @@ class GDImg implements IImg {
 		}
 	}
 
+	public function copy($x, $y, $width, $heigth) {
+		$copy = imagecreatetruecolor($width, $heigth);
+		imagecopy($copy, $this->img, 0, 0, $x, $y, $width, $heigth);
+
+		return new self($copy);
+	}
+
 	public function subImgPos(IImg $subimg, $limit = 1, $area = null, $reverse = false, $skipTransparent = false) {
 		$search = Utils::search($this, $subimg)
 			->setLimit($limit)
