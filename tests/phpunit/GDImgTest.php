@@ -53,4 +53,11 @@ class GDImgTest extends \PHPUnit_Framework_TestCase {
 		$this->assertCount($expectedCount, $pos, "Ожидаем $expectedCount вхождений");
 	}
 
+	public function testCopy() {
+		$screenshot = \Screenpiece\GDImg::fromPath(DATADIR.'/google1.png');
+		$logo = \Screenpiece\GDImg::fromPath(DATADIR.'/googleLogo.png');
+		$copy = $screenshot->copy(10, 10, 230, 100);
+		$this->assertSame((string) $logo, (string) $copy);
+	}
+
 }
