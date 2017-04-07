@@ -8,16 +8,11 @@ var_dump($pos);
 ~~~
 
 ~~~php
-$logo = new Piece(
-	'Логотип Google',
-	GDImg::fromPath(__DIR__.'/data/googleLogo.png'),
-	Position::initByCorners([
-		'top' => 10,
-		'left' => 10,
-	]),
-	0
+$googleScreen = new Screen(
+	GDImg::fromPath(__DIR__.'/data/google1.png'),
+	['Google logo' => new Piece([10, 10, 230, 100], [], 0)]
 );
-$screenshot = GDImg::fromPath(__DIR__.'/data/google1.png');
-$logoIsPresent = $logo->isPresent($screenshot);
-var_dump($logoIsPresent);
+$screenshot = GDImg::fromPath(__DIR__.'/data/google2.png');
+var_dump($googleScreen->equal($screenshot));
+var_dump();
 ~~~
