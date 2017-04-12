@@ -22,39 +22,23 @@ class Compare {
 	}
 
 	public function __invoke() {
+		if ($this->img1->size() !== $this->img2->size()) {
+			return false;
+		}
+
 		$eq = true;
-		list($img1Width, $img1Height) = $this->img1->size();
-		list($img2Width, $img2Height) = $this->img2->size();
-
-		$maxWidth = max($img1Width, $img2Width);
-		$maxHeight = max($img1Height, $img2Height);
-
-		$imgClass = get_class($this->img1);
-		$diff = \call_user_func([$imgClass, 'createEmpty'], $maxWidth, $maxHeight);
-		foreach ($diff->eachPixel() as $pixel) {
-			if (
-				($pixel['x'] < $img1Width && $pixel['x'] < $img2Width)
-				&& ($pixel['y'] < $img1Height && $pixel['y'] < $img2Height)
-			) {
-				$p2 = $this->img2->getPixel($pixel['x'], $pixel['y']);
-				if ($p2 >> 24 === 127 && $this->skipTransparent) {
-					$diff->setPixel($pixel['x'], $pixel['y'], [0, 0, 0, 127]);
-					continue;
-				}
-				$p1 = $this->img1->getPixel($pixel['x'], $pixel['y']);
-				if ($p1 === $p2) {
-					$diff->setPixel($pixel['x'], $pixel['y'], [0, 0, 0, 127]);
-				} else {
-					$eq = false;
-					$diff->setPixel($pixel['x'], $pixel['y'], [255, 0, 0, 0]);
-				}
-			} else {
+		foreach ($this->img2->eachPixel() as $pixel) {
+			if ($pixel['color'] >> 24 === 127 && $this->skipTransparent) {
+				continue;
+			}
+			$srcColor = $this->img1->getPixel($pixel['x'], $pixel['y']);
+			if ($srcColor !== $pixel['color']) {
 				$eq = false;
-				$diff->setPixel($pixel['x'], $pixel['y'], [255, 0, 0, 0]);
+				break;
 			}
 		}
 
-		return [$eq, $diff];
+		return $eq;
 	}
 
 }

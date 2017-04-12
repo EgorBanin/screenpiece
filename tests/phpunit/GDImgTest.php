@@ -15,9 +15,9 @@ class GDImgTest extends \PHPUnit_Framework_TestCase {
 	public function provideSubImgPos() {
 		return [
 			[
-				DATADIR.'/google1.png',
+				DATADIR.'/googleScreenshot.png',
 				DATADIR.'/googleLogo.png',
-				[[10, 10]],
+				[[28, 50]],
 			],
 			[
 				DATADIR.'/googleLogo.png',
@@ -28,7 +28,7 @@ class GDImgTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testSubImgPosReverce() {
-		$screenshot = \Screenpiece\GDImg::fromPath(DATADIR.'/google1.png');
+		$screenshot = \Screenpiece\GDImg::fromPath(DATADIR.'/googleScreenshot.png');
 		$terms = \Screenpiece\GDImg::fromPath(DATADIR.'/googleTerms.png');
 
 		$start = microtime(true);
@@ -46,17 +46,17 @@ class GDImgTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testSubImgPosAll() {
-		$screenshot = \Screenpiece\GDImg::fromPath(DATADIR.'/google1.png');
+		$screenshot = \Screenpiece\GDImg::fromPath(DATADIR.'/googleScreenshot.png');
 		$logo = \Screenpiece\GDImg::fromPath(DATADIR.'/o.png');
-		$pos = $screenshot->subImgPos($logo, 0, [0, 2700, INF, INF]);
+		$pos = $screenshot->subImgPos($logo, 0, [0, 2600, INF, INF]);
 		$expectedCount = 9;
 		$this->assertCount($expectedCount, $pos, "Ожидаем $expectedCount вхождений");
 	}
 
 	public function testCopy() {
-		$screenshot = \Screenpiece\GDImg::fromPath(DATADIR.'/google1.png');
+		$screenshot = \Screenpiece\GDImg::fromPath(DATADIR.'/googleScreenshot.png');
 		$logo = \Screenpiece\GDImg::fromPath(DATADIR.'/googleLogo.png');
-		$copy = $screenshot->copy(10, 10, 230, 100);
+		$copy = $screenshot->copy(28, 50, 236, 77);
 		$this->assertSame((string) $logo, (string) $copy);
 	}
 

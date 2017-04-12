@@ -16,4 +16,10 @@ class Utils {
 		return $compare;
 	}
 
+	public static function diff(IImg $img1, IImg $img2) {
+		$diff = new Diff($img1, $img2);
+
+		return $diff;
+	}
+
 }
