@@ -64,10 +64,12 @@ switch ($method) {
 
 	case 'compare':
 		$compare = \Screenpiece\Utils::compare($img1, $img2);
-		list($isEquals, $diff) = $compare();
+		$isEquals = $compare();
 
 		if ( ! empty($opts['diff'])) {
-			file_put_contents($opts['diff'], (string) $diff);
+			$diffFile = realpath($opts['diff']);
+			$diff = \Screenpiece\Utils::diff($img1, $img2);
+			file_put_contents($diffFile, (string) $diff());
 		}
 
 		echo $isEquals? "same\n" : "different\n";

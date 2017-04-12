@@ -26,7 +26,8 @@ class Screen {
 			throw new \Exception('Не найден фрагмент '.$pieceName);
 		}
 
-		$subImg = $this->img->copy($piece->getRect());
+		list($x, $y, $width, $heigth) = $piece->getBounds();
+		$subImg = $this->img->copy($x, $y, $width, $heigth);
 		$search = Utils::search($img, $subImg)
 			->setSkipTransparent(true);
 		$pos = $search();
@@ -45,7 +46,7 @@ class Screen {
 		return [
 			'src' => (string) $this->img,
 			'pieces' => array_map($this->pieces, function($piece) {
-				//
+				return $piece->toArray();
 			}),
 		];
 	}
