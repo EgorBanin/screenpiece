@@ -4,6 +4,7 @@
 	"keywords": ["screeshot", "search", "gd"],
 	"license": "UNLICENSE",
 	"require": {
+		"php": ">=7.0",
 		"ext-gd": "*"
 	},
 	"require-dev": {
@@ -12,6 +13,11 @@
 	"autoload": {
 		"psr-0": {
 			"Screenpiece": "src/"
+		}
+	},
+	"config": {
+		"platform": {
+			"php": "7.0"
 		}
 	}
 }

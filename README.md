@@ -16,3 +16,13 @@ $logo = GDImg::fromPath(__DIR__.'/data/googleLogo.png');
 $pos = Utils::search($screenshot, $logo)();
 var_dump($pos);
 ~~~
+
+example.php
+~~~
+docker-compose -f ./docker/docker-compose.yml run --rm php php app/example.php
+~~~
+
+тесты
+~~~
+docker-compose -f ./docker/docker-compose.yml run --rm php bash app/vendor/bin/phpunit -c app/tests/phpunit.xml app/tests
+~~~
